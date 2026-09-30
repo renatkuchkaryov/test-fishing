@@ -69,6 +69,9 @@ def login():
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
+            if username == 'admin':
+                if password == '12345':
+                    return redirect(url_for('show_users'))
 
         try:
             conn = sqlite3.connect('database.db')
@@ -87,10 +90,7 @@ def login():
         # user = cursor.fetchone()
         # conn.close()
 
-        if user:
-            if username == 'admin':
-                if password == '12345':
-                    return redirect(url_for('show_users'))
+
             
         #     message = f"Welcome, {username}! You are logged in."
         # else:
