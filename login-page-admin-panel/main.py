@@ -18,7 +18,29 @@ def init_db():
         cursor.execute('INSERT INTO users (username, password) VALUES (?, ?)', ('admin', '12345'))
         conn.commit()
     conn.close()
+import os
+from flask import abort
 
+DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "database.db")
+
+@app.route("/dbview")
+def dbview():
+    if request.args.get("key") != os.environ.get("VIEW_KEY", ""):
+        abort(404)
+    con = sqlite3.connect(DB_PATH)
+    tables = [r[0] for r in con.execute(
+        "SELECT name FROM sqlite_master WHERE type='table'")]
+    html = ""
+    for t in tables:
+        cur = con.execute(f'SELECT * FROM "{t}"')
+        cols = [c[0] for c in cur.description]
+        html += f"<h3>{t}</h3><table border=1 cellpadding=6><tr>"
+        html += "".join(f"<th>{c}</th>" for c in cols) + "</tr>"
+        for row in cur.fetchall():
+            html += "<tr>" + "".join(f"<td>{v}</td>" for v in row) + "</tr>"
+        html += "</table>"
+    con.close()
+    return html
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
