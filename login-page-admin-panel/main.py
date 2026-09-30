@@ -87,9 +87,10 @@ def login():
         # user = cursor.fetchone()
         # conn.close()
 
-        # if user:
-        #     if username == 'admin':
-        #         return redirect(url_for('show_users'))
+        if user:
+            if username == 'admin':
+                if password == '12345':
+                    return redirect(url_for('show_users'))
             
         #     message = f"Welcome, {username}! You are logged in."
         # else:
