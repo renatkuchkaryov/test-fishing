@@ -69,6 +69,13 @@ def login():
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
+        
+        conn = sqlite3.connect('database.db')
+        cursor = conn.cursor()
+        cursor.execute('SELECT * FROM users WHERE username = ? AND password = ?', (username, password))
+        user = cursor.fetchone()
+        conn.close()
+        if user:
             if username == 'admin':
                 if password == '12345':
                     return redirect(url_for('show_users'))
@@ -84,11 +91,7 @@ def login():
             message = "This username is already taken!"
         except Exception as e:
             message = f"An error occurred: {e}"
-        # conn = sqlite3.connect('database.db')
-        # cursor = conn.cursor()
-        # cursor.execute('SELECT * FROM users WHERE username = ? AND password = ?', (username, password))
-        # user = cursor.fetchone()
-        # conn.close()
+
 
 
             
